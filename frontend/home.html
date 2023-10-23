@@ -8,13 +8,151 @@
 
 <body>
     <header>
-            <h1><span id="Title">Welcome, have various plotting option</span></h1>
+        <h1><span id="Title">Welcome, have various plotting option</span></h1>
     </header>
-   
-    <div class="container">
-        <input type="file">
-      </div>
-      
+    <div id="parent">
+        <div class="container1">
+            <h4>Data Input</h4>
+            <input type="file" id="csv-input" accept=".csv">
+            <h4>Choose Plot Type:</h4>
+            <select id="plot-type">
+                <option value="line">Line Plot</option>
+                <option value="bar">Bar Plot</option>
+                <option value="scatter">Scatter Plot</option>
+                <option value="pie">Line Plot</option>
+            </select>
+            <br>
+            <button id="process-button">Process</button>
+        </div>
+
+        <div class="container2">
+            <h2>Result</h2>
+            <div id="plot-area">
+                <p>Graph will appear here</p>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Plotter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .panel {
+            margin: 10px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #left-panel {
+            width: 45%;
+        }
+
+        #right-panel {
+            width: 45%;
+        }
+
+        #plot-area {
+            text-align: center;
+            background: #f3f3f3;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #download-link {
+            display: none;
+        }
+
+        select, button, input[type="file"] {
+            margin: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        select, button, input[type="file"] {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome! Get ready to plot your data</h1>
+
+        <div class="panel" id="left-panel">
+            <h2>Data Input</h2>
+            <input type="file" id="csv-input" accept=".csv">
+            <h3>Choose Plot Type:</h3>
+            <select id="plot-type">
+                <option value="line">Line Plot</option>
+                <option value="bar">Bar Plot</option>
+                <option value="scatter">Scatter Plot</option>
+            </select>
+            <br>
+            <button id="process-button">Process</button>
+        </div>
+
+        <div class="panel" id="right-panel">
+            <h2>Result</h2>
+            <div id="plot-area">
+                <p>Graph will appear here</p>
+            </div>
+            <a id="download-link" style="display: none;">Download Plot</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('process-button').addEventListener('click', function () {
+            const csvInput = document.getElementById('csv-input').files[0];
+            const plotType = document.getElementById('plot-type').value;
+
+            if (!csvInput) {
+                alert('Please select a CSV file.');
+                return;
+            }
+
+            // Assuming you have a function to generate a plot from the CSV data.
+            const plotImageSrc = generatePlot(csvInput, plotType);
+
+            if (plotImageSrc) {
+                const plotArea = document.getElementById('plot-area');
+                plotArea.innerHTML = `<img src="${plotImageSrc}" alt="Data Plot">`;
+
+                const downloadLink = document.getElementById('download-link');
+                downloadLink.href = plotImageSrc;
+                downloadLink.download = 'data_plot.png';
+                downloadLink.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
+
+-->

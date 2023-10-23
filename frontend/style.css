@@ -1,30 +1,55 @@
 body{
-background-color: rgb(249, 249, 249);
+background-color: rgb(255, 255, 255);
+}
+select, button, input[type="file"] {
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-
-.container {
+header{
+    padding-top: 0%;
+    color: black;
+    text-align: center;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+.container1 {
     font-family: arial;
     font-size: 24px;
     margin-top: 10%;
-    margin-left: 38%;
-    width: 300px;
+    margin-left: 5%;
+    width: 450px;
     height: 350px;
     border-radius: 25px;
     outline: solid 1px black;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 0 10px 10px rgb(157, 157, 160);
     text-align: center;
+    background-color: rgb(186, 231, 249);
+    /* Setup */
+    position: relative;
+  }
+
+  #parent {
+    display: flex;
+    background-color: white;
+  }
+
+  .container2 {
+    font-family: arial;
+    font-size: 24px;
+    margin-top: 0%;
+    margin-left: 5%;
+    width: 750px;
+    height: 750px;
+    border-radius: 25px;
+    outline: solid 1px black;
+    box-shadow: 0 0 10px 10px rgb(160, 160, 164);
+    text-align: center;
+    background-color: rgb(186, 231, 249);
+    margin-right: 5%;
     /* Setup */
     position: relative;
   }
   
-  .child {
-    width: 50px;
-    height: 50px;
-    background-color: red;
-    /* Center vertically and horizontally */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -25px 0 0 -25px; /* Apply negative top and left margins to truly center the element */
-  }
+  
