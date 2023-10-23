@@ -1,39 +1,81 @@
 import matplotlib.pyplot as plt
 
 
-def bar_plot():
+def bar_plot(xs, ys, labels, colors, widths, xlabel, ylabel, title, out_path):
+    """
+    To create bar plots
+
+    Args:
+        xs: list of lists for the x-axis
+        ys: list of lists for the y-axis
+        labels: list of labels for each corresponding (x, y) pairs
+        colors: list of colors for each corresponding (x, y) pairs
+        widths: list of widths for each corresponding (x, y) pairs
+        xlabel: label for the x-axis
+        ylabel: label for the y-axis
+        title: title for the graph
+        out_path: path to save the  graph
+
+    Returns:
+        None
+    """
     plt.figure(figsize=(10,6))
-    plt.bar([0.25,2.25,3.25,5.25,7.25],[300,400,200,600,700],
-    label="Carpenter",color='b',width=0.5)
-    plt.bar([0.75,1.75,2.75,3.75,4.75],[50,30,20,50,60],
-    label="Plumber", color='g',width=.5)
+    for i, _ in enumerate(xs):
+        plt.bar(xs[i], ys[i], label=labels[i], color=colors[i], width=widths[i])
     plt.legend()
-    plt.xlabel('Days')
-    plt.ylabel('Wage')
-    plt.title('Details')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
 
-    plt.savefig("output2.png", bbox_inches='tight')
+    plt.savefig(out_path, bbox_inches='tight')
 
 
 
-def scatter_plot():
+def scatter_plot(xs, ys, labels, colors, title, xlabel, ylabel, out_path):
+    """
+    To create scatter plots 
+
+    Args:
+        xs: list of lists for the x-axis
+        ys: list of lists for the y-axis
+        labels: list of labels for each corresponding (x, y) pairs
+        colors: list of colors for each corresponding (x, y) pairs
+        xlabel: label for the x-axis
+        ylabel: label for the y-axis
+        title: title for the graph
+        out_path: path to save the  graph
+
+    Returns:
+        None
+    """
     plt.figure(figsize=(10,6))
-
-    x1 = [1, 2.5,3,4.5,5,6.5,7]
-    y1 = [1,2, 3, 2, 1, 3, 4]
-    x2=[8, 8.5, 9, 9.5, 10, 10.5, 11]
-    y2=[3,3.5, 3.7, 4,4.5, 5, 5.2]
-    plt.scatter(x1, y1, label = 'high bp low heartrate', color='c')
-    plt.scatter(x2,y2,label='low bp high heartrate',color='g')
-    plt.title('Smart Band Data Report')
-    plt.xlabel('x')
-    plt.ylabel('y')
+    for i, x in enumerate(xs):
+        plt.scatter(xs[i], ys[i], label=labels[i], color=colors[i])
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     plt.legend()
 
-    plt.savefig("output2.png", bbox_inches='tight')
+    plt.savefig(out_path, bbox_inches='tight')
 
 
 def pie_plot():
+    """
+    To generate pie plots 
+
+    Args:
+        xs: list of lists for the x-axis
+        ys: list of lists for the y-axis
+        labels: list of labels for each corresponding (x, y) pairs
+        colors: list of colors for each corresponding (x, y) pairs
+        xlabel: label for the x-axis
+        ylabel: label for the y-axis
+        title: title for the graph
+        out_path: path to save the  graph
+
+    Returns:
+        None
+    """
     plt.figure(figsize=(10,6))
 
     slice = [12, 25, 50, 36, 19]
@@ -69,6 +111,22 @@ def area_plot():
 
 
 def hist_plot():
+    """
+    To create scatter plots 
+
+    Args:
+        xs: list of lists for the x-axis
+        ys: list of lists for the y-axis
+        labels: list of labels for each corresponding (x, y) pairs
+        colors: list of colors for each corresponding (x, y) pairs
+        xlabel: label for the x-axis
+        ylabel: label for the y-axis
+        title: title for the graph
+        out_path: path to save the  graph
+
+    Returns:
+        None
+    """
     plt.figure(figsize=(10,6))
 
     pop = [22,55,62,45,21,22,34,42,42,4,2,8]
@@ -79,4 +137,7 @@ def hist_plot():
     plt.title('Histogram')
     
     plt.savefig("output2.png", bbox_inches='tight')
+
+
+
 
