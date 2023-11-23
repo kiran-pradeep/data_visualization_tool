@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Query, Path
+from fastapi import FastAPI, Query
 import matplotlib.pyplot as plt
 import io
 from fastapi.responses import StreamingResponse
@@ -6,7 +6,18 @@ import numpy as np
 
 app = FastAPI()
 
-def generate_line_plot(x, y, title):
+def generate_line_plot(x: list, y: list, title: str) -> plt.Figure:
+    """
+    Generate a line plot.
+
+    Parameters:
+    - x (list): X-axis data.
+    - y (list): Y-axis data.
+    - title (str): Title of the plot.
+
+    Returns:
+    - plt.Figure: Matplotlib Figure object.
+    """
     fig, ax = plt.subplots()
     ax.plot(x, y, label='Line Plot')
     ax.set_xlabel('X-axis')
@@ -15,7 +26,18 @@ def generate_line_plot(x, y, title):
     ax.legend()
     return fig
 
-def generate_bar_chart(x, y, title):
+def generate_bar_chart(x: list, y: list, title: str) -> plt.Figure:
+    """
+    Generate a bar chart.
+
+    Parameters:
+    - x (list): X-axis data.
+    - y (list): Y-axis data.
+    - title (str): Title of the plot.
+
+    Returns:
+    - plt.Figure: Matplotlib Figure object.
+    """
     fig, ax = plt.subplots()
     ax.bar(x, y, label='Bar Chart')
     ax.set_xlabel('X-axis')
@@ -24,7 +46,17 @@ def generate_bar_chart(x, y, title):
     ax.legend()
     return fig
 
-def generate_histogram(data, title):
+def generate_histogram(data: list, title: str) -> plt.Figure:
+    """
+    Generate a histogram.
+
+    Parameters:
+    - data (list): List of values for the histogram.
+    - title (str): Title of the plot.
+
+    Returns:
+    - plt.Figure: Matplotlib Figure object.
+    """
     fig, ax = plt.subplots()
     ax.hist(data, bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85)
     ax.set_xlabel('Value')
@@ -32,7 +64,18 @@ def generate_histogram(data, title):
     ax.set_title(title)
     return fig
 
-def generate_scatter_plot(x, y, title):
+def generate_scatter_plot(x: list, y: list, title: str) -> plt.Figure:
+    """
+    Generate a scatter plot.
+
+    Parameters:
+    - x (list): X-axis data.
+    - y (list): Y-axis data.
+    - title (str): Title of the plot.
+
+    Returns:
+    - plt.Figure: Matplotlib Figure object.
+    """
     fig, ax = plt.subplots()
     ax.scatter(x, y, label='Scatter Plot')
     ax.set_xlabel('X-axis')
@@ -41,14 +84,35 @@ def generate_scatter_plot(x, y, title):
     ax.legend()
     return fig
 
-def generate_pie_chart(labels, sizes, title):
+def generate_pie_chart(labels: list, sizes: list, title: str) -> plt.Figure:
+    """
+    Generate a pie chart.
+
+    Parameters:
+    - labels (list): Labels for the Pie Chart.
+    - sizes (list): Sizes for the Pie Chart.
+    - title (str): Title of the plot.
+
+    Returns:
+    - plt.Figure: Matplotlib Figure object.
+    """
     fig, ax = plt.subplots()
     ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
     ax.axis('equal')
     ax.set_title(title)
     return fig
 
-def generate_box_plot(data, title):
+def generate_box_plot(data: list, title: str) -> plt.Figure:
+    """
+    Generate a box plot.
+
+    Parameters:
+    - data (list): List of values for the Box Plot.
+    - title (str): Title of the plot.
+
+    Returns:
+    - plt.Figure: Matplotlib Figure object.
+    """
     fig, ax = plt.subplots()
     ax.boxplot(data)
     ax.set_xlabel('Data')
@@ -56,14 +120,33 @@ def generate_box_plot(data, title):
     ax.set_title(title)
     return fig
 
-def generate_heatmap(data, title):
+def generate_heatmap(data: list, title: str) -> plt.Figure:
+    """
+    Generate a heatmap.
+
+    Parameters:
+    - data (list): 2D array for the Heatmap.
+    - title (str): Title of the plot.
+
+    Returns:
+    - plt.Figure: Matplotlib Figure object.
+    """
     fig, ax = plt.subplots()
     cax = ax.imshow(data, cmap='viridis')
     fig.colorbar(cax)
     ax.set_title(title)
     return fig
 
-def save_plot_to_stream(fig):
+def save_plot_to_stream(fig: plt.Figure) -> io.BytesIO:
+    """
+    Save a Matplotlib Figure to a BytesIO stream.
+
+    Parameters:
+    - fig (plt.Figure): Matplotlib Figure object.
+
+    Returns:
+    - io.BytesIO: BytesIO stream containing the plot image.
+    """
     image_stream = io.BytesIO()
     fig.savefig(image_stream, format='png')
     image_stream.seek(0)
