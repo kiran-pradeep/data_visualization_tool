@@ -28,7 +28,7 @@
             </select>
             <br>
             <!-- Updated button to trigger the plot generation -->
-            <button id="process-button" onclick="generatePlot(event)">Generate Plot</button>
+            <button id="process-button" onclick="generatePlot()">Generate Plot</button>
         </div>
 
         <div class="container2">
@@ -45,7 +45,6 @@
     <script>
         // Function to handle file upload and trigger plot generation
         function generatePlot(event) {
-            event.preventDefault();
             
             const fileInput = document.getElementById("csv-input");
             const plotType = document.getElementById("plot-type").value;
