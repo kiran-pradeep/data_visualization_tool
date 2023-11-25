@@ -8,13 +8,14 @@ import pandas as pd
 from typing import List, Dict
 import random
 import string
+import os
 
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this to your specific frontend origin or "*" to allow all
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -25,6 +26,7 @@ def gen_random_str(N: int) -> str:
 
 def save_plot_to_file(fig: plt.Figure):
     print("check")
+    os.makedirs('../outputs', exist_ok=True)
     fpath = "../outputs/" + gen_random_str(32) + ".png"
     fig.savefig(fpath, format="png")
     return fpath
