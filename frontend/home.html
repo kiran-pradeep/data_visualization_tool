@@ -1,158 +1,100 @@
 <!DOCTYPE html>
-<html>
-
-
-<head>
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-    <header>
-        <h1><span id="Title">Welcome, have various plotting option</span></h1>
-    </header>
-    <div id="parent">
-        <div class="container1">
-            <h4>Data Input</h4>
-            <input type="file" id="csv-input" accept=".csv">
-            <h4>Choose Plot Type:</h4>
-            <select id="plot-type">
-                <option value="line">Line Plot</option>
-                <option value="bar">Bar Plot</option>
-                <option value="scatter">Scatter Plot</option>
-                <option value="pie">Line Plot</option>
-            </select>
-            <br>
-            <button id="process-button">Process</button>
-        </div>
-
-        <div class="container2">
-            <h2>Result</h2>
-            <div id="plot-area">
-                <p>Graph will appear here</p>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>
-
-<!--<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Plotter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            text-align: center;
-        }
-
-        .container {
-            background-color: #fff;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .panel {
-            margin: 10px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        #left-panel {
-            width: 45%;
-        }
-
-        #right-panel {
-            width: 45%;
-        }
-
-        #plot-area {
-            text-align: center;
-            background: #f3f3f3;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        #download-link {
-            display: none;
-        }
-
-        select, button, input[type="file"] {
-            margin: 10px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        select, button, input[type="file"] {
-            font-size: 16px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <title>Plot Generator</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome! Get ready to plot your data</h1>
-
-        <div class="panel" id="left-panel">
-            <h2>Data Input</h2>
+    <header>
+        <h1>Welcome, choose a CSV file and plot type</h1>
+    </header>
+    <div id="parent">
+        <div class="container1">
+            <h4>Data Input</h4>
+            <!-- Updated input element for file upload -->
+            <label for="csv-input">Choose CSV File</label>
             <input type="file" id="csv-input" accept=".csv">
-            <h3>Choose Plot Type:</h3>
+            <h4>Choose Plot Type:</h4>
             <select id="plot-type">
                 <option value="line">Line Plot</option>
-                <option value="bar">Bar Plot</option>
+                <option value="bar">Bar Chart</option>
+                <option value="histogram">Histogram</option>
                 <option value="scatter">Scatter Plot</option>
+                <option value="pie">Pie Chart</option>
+                <option value="box">Box Plot</option>
+                <option value="heatmap">Heatmap</option>
             </select>
             <br>
-            <button id="process-button">Process</button>
+            <!-- Updated button to trigger the plot generation -->
+            <button id="process-button" onclick="generatePlot()">Generate Plot</button>
         </div>
 
-        <div class="panel" id="right-panel">
+        <div class="container2">
             <h2>Result</h2>
+            <!-- Updated div to display the generated plot -->
             <div id="plot-area">
                 <p>Graph will appear here</p>
             </div>
-            <a id="download-link" style="display: none;">Download Plot</a>
         </div>
     </div>
 
+    <!-- Include script.js for handling interactions -->
     <script>
-        document.getElementById('process-button').addEventListener('click', function () {
-            const csvInput = document.getElementById('csv-input').files[0];
-            const plotType = document.getElementById('plot-type').value;
+        // Function to handle file upload and trigger plot generation
+function handleFile() {
+    const fileInput = document.getElementById("csv-input");
+    const plotType = document.getElementById("plot-type").value;
 
-            if (!csvInput) {
-                alert('Please select a CSV file.');
-                return;
-            }
+    const reader = new FileReader();
 
-            // Assuming you have a function to generate a plot from the CSV data.
-            const plotImageSrc = generatePlot(csvInput, plotType);
+    // Set up the FileReader to read the file as text
+    reader.onload = function (event) {
+        const fileContent = event.target.result;
 
-            if (plotImageSrc) {
-                const plotArea = document.getElementById('plot-area');
-                plotArea.innerHTML = `<img src="${plotImageSrc}" alt="Data Plot">`;
+        // Convert CSV data to array of arrays
+        const csvData = fileContent.split('\n').map(row => row.split(','));
 
-                const downloadLink = document.getElementById('download-link');
-                downloadLink.href = plotImageSrc;
-                downloadLink.download = 'data_plot.png';
-                downloadLink.style.display = 'block';
-            }
-        });
+        // Extract X and Y data from CSV
+        const x = csvData.map(row => parseFloat(row[0]));
+        const y = csvData.map(row => parseFloat(row[1]));
+
+        // Create a JSON object with the X and Y data and plot type
+        const jsonData = {
+            data: {
+                x: x,
+                y: y,
+            },
+            plot_type: plotType,
+        };
+
+        // Make a POST request to the backend to generate the plot
+        fetch("http://localhost:8000/generate_plot", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(jsonData),
+        })
+        .then(response => {response.blob();})
+        .then(blob => {
+            // Display the generated plot in the "plot-area" div
+            const plotArea = document.getElementById("plot-area");
+            plotArea.innerHTML = `<img src="${URL.createObjectURL(blob)}" alt="Generated Plot">`;
+        })
+        .catch(error => console.error("Error:", error));
+    };
+
+    // Read the file as text
+    reader.readAsText(fileInput.files[0]);
+}
+
+// Function to generate plot when the "Generate Plot" button is clicked
+function generatePlot() {
+    handleFile();
+}
+
     </script>
 </body>
 </html>
-
--->
