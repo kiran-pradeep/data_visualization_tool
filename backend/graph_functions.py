@@ -1,23 +1,55 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, File, UploadFile
+from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 import matplotlib.pyplot as plt
 import io
-from fastapi.responses import StreamingResponse
 import numpy as np
+import pandas as pd
+from typing import List, Dict
+import random
+import string
+
 
 app = FastAPI()
 
-def generate_line_plot(x: list, y: list, title: str) -> plt.Figure:
-    """
-    Generate a line plot.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to your specific frontend origin or "*" to allow all
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    Parameters:
-    - x (list): X-axis data.
-    - y (list): Y-axis data.
-    - title (str): Title of the plot.
+def gen_random_str(N: int) -> str:
+    return ''.join(random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ' + '0123456789') for _ in range(N))
 
-    Returns:
-    - plt.Figure: Matplotlib Figure object.
-    """
+def save_plot_to_file(fig: plt.Figure):
+    print("check")
+    fpath = "../outputs/" + gen_random_str(32) + ".png"
+    fig.savefig(fpath, format="png")
+    return fpath
+
+def validate_csv_file(file: UploadFile) -> pd.DataFrame:
+    try:
+        # Read the CSV file into a Pandas DataFrame
+        df = pd.read_csv(io.StringIO(file.file.read().decode('utf-8')))
+        return df
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid CSV file. Error: {str(e)}")
+
+def validate_json_content(json_content: Dict[str, List[float]]) -> List[List[float]]:
+    try:
+        x = json_content.get('x', [])
+        y = json_content.get('y', [])
+
+        if not x or not y:
+            raise ValueError("X-axis and Y-axis data must be provided.")
+
+        return list(zip(x, y))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid JSON content. Error: {str(e)}")
+
+def generate_line_plot(x: List[float], y: List[float], title: str) -> plt.Figure:
     fig, ax = plt.subplots()
     ax.plot(x, y, label='Line Plot')
     ax.set_xlabel('X-axis')
@@ -26,18 +58,7 @@ def generate_line_plot(x: list, y: list, title: str) -> plt.Figure:
     ax.legend()
     return fig
 
-def generate_bar_chart(x: list, y: list, title: str) -> plt.Figure:
-    """
-    Generate a bar chart.
-
-    Parameters:
-    - x (list): X-axis data.
-    - y (list): Y-axis data.
-    - title (str): Title of the plot.
-
-    Returns:
-    - plt.Figure: Matplotlib Figure object.
-    """
+def generate_bar_chart(x: List[float], y: List[float], title: str) -> plt.Figure:
     fig, ax = plt.subplots()
     ax.bar(x, y, label='Bar Chart')
     ax.set_xlabel('X-axis')
@@ -46,17 +67,7 @@ def generate_bar_chart(x: list, y: list, title: str) -> plt.Figure:
     ax.legend()
     return fig
 
-def generate_histogram(data: list, title: str) -> plt.Figure:
-    """
-    Generate a histogram.
-
-    Parameters:
-    - data (list): List of values for the histogram.
-    - title (str): Title of the plot.
-
-    Returns:
-    - plt.Figure: Matplotlib Figure object.
-    """
+def generate_histogram(data: List[float], title: str) -> plt.Figure:
     fig, ax = plt.subplots()
     ax.hist(data, bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85)
     ax.set_xlabel('Value')
@@ -64,18 +75,7 @@ def generate_histogram(data: list, title: str) -> plt.Figure:
     ax.set_title(title)
     return fig
 
-def generate_scatter_plot(x: list, y: list, title: str) -> plt.Figure:
-    """
-    Generate a scatter plot.
-
-    Parameters:
-    - x (list): X-axis data.
-    - y (list): Y-axis data.
-    - title (str): Title of the plot.
-
-    Returns:
-    - plt.Figure: Matplotlib Figure object.
-    """
+def generate_scatter_plot(x: List[float], y: List[float], title: str) -> plt.Figure:
     fig, ax = plt.subplots()
     ax.scatter(x, y, label='Scatter Plot')
     ax.set_xlabel('X-axis')
@@ -84,35 +84,14 @@ def generate_scatter_plot(x: list, y: list, title: str) -> plt.Figure:
     ax.legend()
     return fig
 
-def generate_pie_chart(labels: list, sizes: list, title: str) -> plt.Figure:
-    """
-    Generate a pie chart.
-
-    Parameters:
-    - labels (list): Labels for the Pie Chart.
-    - sizes (list): Sizes for the Pie Chart.
-    - title (str): Title of the plot.
-
-    Returns:
-    - plt.Figure: Matplotlib Figure object.
-    """
+def generate_pie_chart(labels: List[str], sizes: List[float], title: str) -> plt.Figure:
     fig, ax = plt.subplots()
     ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
     ax.axis('equal')
     ax.set_title(title)
     return fig
 
-def generate_box_plot(data: list, title: str) -> plt.Figure:
-    """
-    Generate a box plot.
-
-    Parameters:
-    - data (list): List of values for the Box Plot.
-    - title (str): Title of the plot.
-
-    Returns:
-    - plt.Figure: Matplotlib Figure object.
-    """
+def generate_box_plot(data: List[float], title: str) -> plt.Figure:
     fig, ax = plt.subplots()
     ax.boxplot(data)
     ax.set_xlabel('Data')
@@ -120,120 +99,57 @@ def generate_box_plot(data: list, title: str) -> plt.Figure:
     ax.set_title(title)
     return fig
 
-def generate_heatmap(data: list, title: str) -> plt.Figure:
-    """
-    Generate a heatmap.
-
-    Parameters:
-    - data (list): 2D array for the Heatmap.
-    - title (str): Title of the plot.
-
-    Returns:
-    - plt.Figure: Matplotlib Figure object.
-    """
+def generate_heatmap(data: List[List[float]], title: str) -> plt.Figure:
     fig, ax = plt.subplots()
     cax = ax.imshow(data, cmap='viridis')
     fig.colorbar(cax)
     ax.set_title(title)
     return fig
 
-def save_plot_to_stream(fig: plt.Figure) -> io.BytesIO:
-    """
-    Save a Matplotlib Figure to a BytesIO stream.
+from pydantic import BaseModel
 
-    Parameters:
-    - fig (plt.Figure): Matplotlib Figure object.
-
-    Returns:
-    - io.BytesIO: BytesIO stream containing the plot image.
-    """
-    image_stream = io.BytesIO()
-    fig.savefig(image_stream, format='png')
-    image_stream.seek(0)
-    plt.close(fig)
-    return image_stream
-
-# API endpoints for different plot types
-
-@app.get("/generate_line_plot/")
-async def generate_line_plot_api(
-        x: list = Query(..., title="X-axis data", description="X-axis values", example="[1, 2, 3, 4, 5]"),
-        y: list = Query(..., title="Y-axis data", description="Y-axis values", example="[10, 12, 5, 8, 15]"),
-        title: str = Query(..., title="Plot Title", description="Title of the Line Plot")
-    ):
-    fig = generate_line_plot(x, y, title)
-    image_stream = save_plot_to_stream(fig)
-
-    return StreamingResponse(content=image_stream, media_type="image/png")
+class GraphData(BaseModel):
+    data: dict
+    plot_type: str
 
 
-@app.get("/generate_bar_chart/")
-async def generate_bar_chart_api(
-        x: list = Query(..., title="X-axis data", description="X-axis values", example="[1, 2, 3, 4, 5]"),
-        y: list = Query(..., title="Y-axis data", description="Y-axis values", example="[10, 12, 5, 8, 15]"),
-        title: str = Query(..., title="Plot Title", description="Title of the Bar Chart")
-    ):
-    fig = generate_bar_chart(x, y, title)
-    image_stream = save_plot_to_stream(fig)
-
-    return StreamingResponse(content=image_stream, media_type="image/png")
-
-
-@app.get("/generate_histogram/")
-async def generate_histogram_api(
-        data: list = Query(..., title="Data", description="List of values for the histogram", example="[1, 2, 2, 3, 3, 3, 4, 4, 5]"),
-        title: str = Query(..., title="Plot Title", description="Title of the Histogram")
-    ):
-    fig = generate_histogram(data, title)
-    image_stream = save_plot_to_stream(fig)
-
-    return StreamingResponse(content=image_stream, media_type="image/png")
-
-
-@app.get("/generate_scatter_plot/")
-async def generate_scatter_plot_api(
-        x: list = Query(..., title="X-axis data", description="X-axis values", example="[1, 2, 3, 4, 5]"),
-        y: list = Query(..., title="Y-axis data", description="Y-axis values", example="[10, 12, 5, 8, 15]"),
-        title: str = Query(..., title="Plot Title", description="Title of the Scatter Plot")
-    ):
-    fig = generate_scatter_plot(x, y, title)
-    image_stream = save_plot_to_stream(fig)
-
-    return StreamingResponse(content=image_stream, media_type="image/png")
-
-
-@app.get("/generate_pie_chart/")
-async def generate_pie_chart_api(
-        labels: list = Query(..., title="Labels", description="Labels for the Pie Chart", example='["Category A", "Category B", "Category C"]'),
-        sizes: list = Query(..., title="Sizes", description="Sizes for the Pie Chart", example="[30, 40, 30]"),
-        title: str = Query(..., title="Plot Title", description="Title of the Pie Chart")
-    ):
-    fig = generate_pie_chart(labels, sizes, title)
-    image_stream = save_plot_to_stream(fig)
-
-    return StreamingResponse(content=image_stream, media_type="image/png")
-
-
-@app.get("/generate_box_plot/")
-async def generate_box_plot_api(
-        data: list = Query(..., title="Data", description="List of values for the Box Plot", example="[1, 2, 3, 4, 5]"),
-        title: str = Query(..., title="Plot Title", description="Title of the Box Plot")
-    ):
-    fig = generate_box_plot(data, title)
-    image_stream = save_plot_to_stream(fig)
-
-    return StreamingResponse(content=image_stream, media_type="image/png")
-
-
-@app.get("/generate_heatmap/")
-async def generate_heatmap_api(
-        data: list = Query(..., title="Data", description="2D array for the Heatmap", example="[[1, 2, 3], [4, 5, 6], [7, 8, 9]]"),
-        title: str = Query(..., title="Plot Title", description="Title of the Heatmap")
-    ):
-    # Convert the input data to a numpy array
-    data = np.array(data, dtype=float)
+# API endpoint for generating plots
+@app.post("/generate_plot")
+async def generate_plot(graph_data: GraphData):
+    data = graph_data.data
+    plot_type = graph_data.plot_type
+    x = data['x']
+    y = data['y']
     
-    fig = generate_heatmap(data, title)
-    image_stream = save_plot_to_stream(fig)
-    
-    return StreamingResponse(content=image_stream, media_type="image/png")
+    try:
+        # Generate plot based on plot type
+        if plot_type == "line":
+            fig = generate_line_plot(x, y, "Line Plot")
+        elif plot_type == "bar":
+            fig = generate_bar_chart(x, y, "Bar Chart")
+        elif plot_type == "histogram":
+            fig = generate_histogram(y, "Histogram")
+        elif plot_type == "scatter":
+            fig = generate_scatter_plot(x, y, "Scatter Plot")
+        elif plot_type == "pie":
+            labels = [str(i) for i in range(len(x))]
+            fig = generate_pie_chart(labels, y, "Pie Chart")
+        elif plot_type == "box":
+            fig = generate_box_plot([y], "Box Plot")
+        elif plot_type == "heatmap":
+            data = np.array(df, dtype=float)
+            fig = generate_heatmap(data, "Heatmap")
+        else:
+            raise HTTPException(status_code=400, detail="Invalid plot type")
+        # Save plot to stream
+        fpath = save_plot_to_file(fig)
+        
+
+        # Return the plot as a StreamingResponse
+        return FileResponse(fpath)
+        return StreamingResponse(content=image_stream, media_type="image/png")
+
+    except HTTPException as e:
+        return e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
