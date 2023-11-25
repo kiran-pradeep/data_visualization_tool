@@ -1,6 +1,6 @@
 # Import necessary modules and packages
 from fastapi import FastAPI, HTTPException, File, UploadFile
-from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import matplotlib.pyplot as plt
 import io
@@ -41,27 +41,34 @@ async def generate_plot(graph_data: GraphData):
     # Extract data from the incoming request
     data = graph_data.data
     plot_type = graph_data.plot_type
+    labels = graph_data.labels
+    title =graph_data.title
     x = data['x']
     y = data['y']
+    x = [k for k in x if k is not None]
+    y = [k for k in y if k is not None]
     
     try:
         # Generate plot based on the specified plot type
         if plot_type == "line":
-            fig = generate_line_plot(x, y, "Line Plot")
+            fig = generate_line_plot(x, y, title, labels)
         elif plot_type == "bar":
-            fig = generate_bar_chart(x, y, "Bar Chart")
+            fig = generate_bar_chart(x, y, title, labels)
         elif plot_type == "histogram":
-            fig = generate_histogram(y, "Histogram")
+            fig = generate_histogram(x, y, title, labels)
         elif plot_type == "scatter":
-            fig = generate_scatter_plot(x, y, "Scatter Plot")
+            fig = generate_scatter_plot(x, y, title, labels)
         elif plot_type == "pie":
             labels = [str(i) for i in range(len(x))]
-            fig = generate_pie_chart(labels, y, "Pie Chart")
+            fig = generate_pie_chart(labels, y, title, labels)
         elif plot_type == "box":
-            fig = generate_box_plot([y], "Box Plot")
+            fig = generate_box_plot([y], title, labels)
         elif plot_type == "heatmap":
+            df = pd.DataFrame()
+            df['x'] = x
+            df['y'] = y
             data = np.array(df, dtype=float)  # (Note: df is not defined in the code. It might be a typo.)
-            fig = generate_heatmap(data, "Heatmap")
+            fig = generate_heatmap(data, title, labels)
         else:
             # Raise an exception for an invalid plot type
             raise HTTPException(status_code=400, detail="Invalid plot type")

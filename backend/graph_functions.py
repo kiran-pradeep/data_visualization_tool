@@ -88,7 +88,7 @@ def validate_json_content(json_content: Dict[str, List[float]]) -> List[List[flo
 
 # Functions to generate various types of plots
 
-def generate_line_plot(x: List[float], y: List[float], title: str) -> plt.Figure:
+def generate_line_plot(x: List[float], y: List[float], title: str, labels: list) -> plt.Figure:
     """
     Generate a line plot.
 
@@ -102,13 +102,13 @@ def generate_line_plot(x: List[float], y: List[float], title: str) -> plt.Figure
     """
     fig, ax = plt.subplots()
     ax.plot(x, y, label='Line Plot')
-    ax.set_xlabel('X-axis')
-    ax.set_ylabel('Y-axis')
+    ax.set_xlabel(labels[0])
+    ax.set_ylabel(labels[1])
     ax.set_title(title)
     ax.legend()
     return fig
 
-def generate_bar_chart(x: List[float], y: List[float], title: str) -> plt.Figure:
+def generate_bar_chart(x: List[float], y: List[float], title: str, labels: list) -> plt.Figure:
     """
     Generate a bar chart.
 
@@ -120,15 +120,19 @@ def generate_bar_chart(x: List[float], y: List[float], title: str) -> plt.Figure
     Returns:
         plt.Figure: Matplotlib figure of the bar chart.
     """
+    x = [k for k in x if k is not None]
+    y = [k for k in y if k is not None]
+
     fig, ax = plt.subplots()
+    x = np.arange(len(x))
     ax.bar(x, y, label='Bar Chart')
-    ax.set_xlabel('X-axis')
-    ax.set_ylabel('Y-axis')
+    ax.set_xlabel(labels[0])
+    ax.set_ylabel(labels[1])
     ax.set_title(title)
     ax.legend()
     return fig
 
-def generate_histogram(data: List[float], title: str) -> plt.Figure:
+def generate_histogram(x: List[float], y: List[float], title: str, labels: list) -> plt.Figure:
     """
     Generate a histogram.
 
@@ -139,14 +143,16 @@ def generate_histogram(data: List[float], title: str) -> plt.Figure:
     Returns:
         plt.Figure: Matplotlib figure of the histogram.
     """
+    x = [k for k in x if k is not None]
+    y = [k for k in y if k is not None]
     fig, ax = plt.subplots()
-    ax.hist(data, bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85)
-    ax.set_xlabel('Value')
-    ax.set_ylabel('Frequency')
+    ax.hist(y, bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85)
+    ax.set_xlabel(labels[0])
+    ax.set_ylabel(labels[1])
     ax.set_title(title)
     return fig
 
-def generate_scatter_plot(x: List[float], y: List[float], title: str) -> plt.Figure:
+def generate_scatter_plot(x: List[float], y: List[float], title: str, labels: list) -> plt.Figure:
     """
     Generate a scatter plot.
 
@@ -160,13 +166,13 @@ def generate_scatter_plot(x: List[float], y: List[float], title: str) -> plt.Fig
     """
     fig, ax = plt.subplots()
     ax.scatter(x, y, label='Scatter Plot')
-    ax.set_xlabel('X-axis')
-    ax.set_ylabel('Y-axis')
+    ax.set_xlabel(labels[0])
+    ax.set_ylabel(labels[1])
     ax.set_title(title)
     ax.legend()
     return fig
 
-def generate_pie_chart(labels: List[str], sizes: List[float], title: str) -> plt.Figure:
+def generate_pie_chart(y: List[str], sizes: List[float], title: str, labels: list) -> plt.Figure:
     """
     Generate a pie chart.
 
@@ -178,13 +184,14 @@ def generate_pie_chart(labels: List[str], sizes: List[float], title: str) -> plt
     Returns:
         plt.Figure: Matplotlib figure of the pie chart.
     """
+    print(y)
     fig, ax = plt.subplots()
-    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')
+    ax.pie(sizes, labels=y, autopct='%1.1f%%', startangle=90)
+    ax.axis(labels[1])
     ax.set_title(title)
     return fig
 
-def generate_box_plot(data: List[float], title: str) -> plt.Figure:
+def generate_box_plot(data: List[float], title: str, labels: list) -> plt.Figure:
     """
     Generate a box plot.
 
@@ -197,12 +204,12 @@ def generate_box_plot(data: List[float], title: str) -> plt.Figure:
     """
     fig, ax = plt.subplots()
     ax.boxplot(data)
-    ax.set_xlabel('Data')
-    ax.set_ylabel('Value')
+    ax.set_xlabel(labels[0])
+    ax.set_ylabel(labels[1])
     ax.set_title(title)
     return fig
 
-def generate_heatmap(data: List[List[float]], title: str) -> plt.Figure:
+def generate_heatmap(data: List[List[float]], title: str, labels: list) -> plt.Figure:
     """
     Generate a heatmap.
 
