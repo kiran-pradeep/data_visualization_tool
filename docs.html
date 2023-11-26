@@ -106,7 +106,7 @@ cd data-visualization-tool</code></pre>
             to access the web interface.</li>
     </ol>
 
-    <h2>Usage</h2>
+    <h2>Web app usage</h2>
     <ol>
         <li>Upload a CSV file containing your data.</li>
         <li>Select the type of graph or plot you want to generate.</li>
@@ -114,6 +114,14 @@ cd data-visualization-tool</code></pre>
         <li>View the generated plot on the page.</li>
         <li>Click on the "Download Graph" button to download the generated plot.</li>
     </ol>
+
+    <h2>Command line usage</h2>
+    <ul>
+        <pre><code>python3 graph_cmd.py --csv_file CSV_FILE --plot_type {line,bar,histogram,scatter,pie,box,heatmap} --title TITLE</code></pre>
+        <li>* CSV_FILE is the path to csv file</li>
+        <li>* Select the type of plot from the list</li>
+        <li>* TITLE is the title of the graph</li>
+    </ul>
 
     <h2>Deployment</h2>
     <p>To deploy this data visualization tool, you can follow these general steps:</p>

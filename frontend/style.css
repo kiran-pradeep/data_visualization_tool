@@ -18,7 +18,14 @@ header {
   height: 80vh;
 }
 
-.container1,
+.container1{
+    width: 40%;
+    padding: 2rem;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
 .container2 {
   width: 40%;
   padding: 2rem;
@@ -63,7 +70,7 @@ label:hover {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 43%;
+  margin-left: 40%;
 }
 
 #download-button {
