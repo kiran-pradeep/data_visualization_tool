@@ -57,7 +57,7 @@
 
     <h2>Features</h2>
     <ul>
-        <li>* Upload a CSV file containing data. Please make sure it contains x and y columns and doesn't contain any
+        <li>* Upload a CSV file containing data. Please make sure it contains x and y comma saparated columns and contain
             header row.</li>
         <li>* Select the type of graph or plot to generate.</li>
         <li>* Generate visually appealing and informative data visualizations.</li>
@@ -97,13 +97,7 @@ cd data-visualization-tool</code></pre>
     <pre><code>uvicorn main:app --reload</code></pre>
 
     <ol start="4">
-        <li>Open VSCode and install the LiveServer extension by Ritwick Dey and click on Go Live on the bottom right of
-            VSCode.</li>
-    </ol>
-
-    <ol start="5">
-        <li>Open your browser and navigate to <a href="http://127.0.0.1:5500" target="_blank">http://127.0.0.1:5500</a>
-            to access the web interface.</li>
+        <li>Open home.html in web server to use the web interface</li>
     </ol>
 
     <h2>Web app usage</h2>
@@ -131,10 +125,6 @@ cd data-visualization-tool</code></pre>
         <li>Deploy the FastAPI application.</li>
     </ol>
     <p>For detailed deployment instructions, refer to the documentation of your chosen hosting service.</p>
-
-    <h2>License</h2>
-    <p>This project is licensed under the MIT License - see the <a href="LICENSE" target="_blank">LICENSE</a> file for
-        details.</p>
 
     <h2>Acknowledgments</h2>
     <p>Thank you to the FastAPI, Matplotlib, and Pandas communities for providing powerful tools for web development and
