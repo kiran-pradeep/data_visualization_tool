@@ -59,8 +59,8 @@ async def generate_plot(graph_data: GraphData):
         elif plot_type == "scatter":
             fig = generate_scatter_plot(x, y, title, labels)
         elif plot_type == "pie":
-            labels = [str(i) for i in range(len(x))]
-            fig = generate_pie_chart(labels, y, title, labels)
+            sizes = [str(i) for i in range(len(x))]
+            fig = generate_pie_chart(y, sizes, title, labels)
         elif plot_type == "box":
             fig = generate_box_plot([y], title, labels)
         elif plot_type == "heatmap":
