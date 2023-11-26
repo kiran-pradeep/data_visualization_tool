@@ -35,7 +35,6 @@ def save_plot_to_file(fig: plt.Figure) -> str:
     Returns:
         str: File path where the figure is saved.
     """
-    print("check")
     os.makedirs('../outputs', exist_ok=True)
     fpath = "../outputs/" + gen_random_str(32) + ".png"
     fig.savefig(fpath, format="png")
@@ -184,10 +183,8 @@ def generate_pie_chart(y: List[str], sizes: List[float], title: str, labels: lis
     Returns:
         plt.Figure: Matplotlib figure of the pie chart.
     """
-    print(y)
     fig, ax = plt.subplots()
-    ax.pie(sizes, labels=y, autopct='%1.1f%%', startangle=90)
-    ax.axis(labels[1])
+    ax.pie(sizes, labels=y, autopct='%1.1f%%', startangle=90, shadow = True)
     ax.set_title(title)
     return fig
 
